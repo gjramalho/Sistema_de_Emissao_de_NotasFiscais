@@ -1,0 +1,57 @@
+<div class="page-container">
+  <h2 class="section-title">Nova Nota Fiscal</h2>
+
+  <form [formGroup]="itemForm" (ngSubmit)="adicionarItem()" class="form-row">
+    <mat-form-field appearance="outline" style="flex: 2;">
+      <mat-label>Produto</mat-label>
+      <mat-select formControlName="produtoId">
+        @for (p of (produtos | async); track p.id) {
+          <mat-option [value]="p.id" [disabled]="p.saldo === 0">
+            {{ p.codigo }} — {{ p.descricao }} (saldo: {{ p.saldo }})
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Quantidade</mat-label>
+      <input matInput type="number" formControlName="quantidade" min="1">
+    </mat-form-field>
+
+    <button mat-raised-button color="accent" type="submit">
+      <mat-icon>add_shopping_cart</mat-icon> Adicionar item
+    </button>
+  </form>
+
+  <table mat-table [dataSource]="(itens$ | async) ?? []" class="full-width mat-elevation-z2" style="margin-top: 24px;">
+    <ng-container matColumnDef="descricao">
+      <th mat-header-cell *matHeaderCellDef>Produto</th>
+      <td mat-cell *matCellDef="let i">{{ i.descricaoProduto }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantidade">
+      <th mat-header-cell *matHeaderCellDef>Quantidade</th>
+      <td mat-cell *matCellDef="let i">{{ i.quantidade }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="acoes">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let i">
+        <button mat-icon-button color="warn" (click)="removerItem(i.produtoId)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="colunasItens"></tr>
+    <tr mat-row *matRowDef="let row; columns: colunasItens;"></tr>
+  </table>
+
+
+  <div style="margin-top: 24px;">
+    <button mat-raised-button color="primary" (click)="salvarNota()" [disabled]="salvando">
+      <mat-icon>save</mat-icon>
+      {{ salvando ? 'Salvando...' : 'Salvar nota fiscal (status Aberta)' }}
+    </button>
+  </div>
+</div>

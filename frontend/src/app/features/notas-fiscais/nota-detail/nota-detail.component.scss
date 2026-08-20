@@ -1,0 +1,15 @@
+a { color: #3f51b5; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.spacer { flex: 1 1 auto; }
+
+@media print {
+	.back-link,
+	.screen-actions {
+		display: none;
+	}
+
+	mat-card {
+		box-shadow: none;
+	}
+}
