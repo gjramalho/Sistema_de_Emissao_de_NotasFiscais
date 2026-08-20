@@ -1,0 +1,44 @@
+services:
+  estoque-service:
+    build:
+      context: .
+      dockerfile: backend/EstoqueService/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__EstoqueDb: Data Source=/app/data/estoque.db
+    ports:
+      - "5001:8080"
+    volumes:
+      - estoque-data:/app/data
+    restart: unless-stopped
+
+  faturamento-service:
+    build:
+      context: .
+      dockerfile: backend/FaturamentoService/Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__FaturamentoDb: Data Source=/app/data/faturamento.db
+      EstoqueService__BaseUrl: http://estoque-service:8080
+    ports:
+      - "5002:8080"
+    volumes:
+      - faturamento-data:/app/data
+    depends_on:
+      - estoque-service
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - estoque-service
+      - faturamento-service
+    restart: unless-stopped
+
+volumes:
+  estoque-data:
+  faturamento-data:
