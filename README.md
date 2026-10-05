@@ -1,4 +1,4 @@
-# Korp - Sistema de Emissao de Notas Fiscais
+# Sistema de Emissao de Notas Fiscais
 
 Projeto tecnico com frontend em Angular e backend em C# (.NET 8), separado em dois microsservicos:
 
